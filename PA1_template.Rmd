@@ -76,7 +76,26 @@ With the previous calcultation we can confirm that a person registers about 1000
 
 ## What is the average daily activity pattern?
 
+Now, we want figure out how is the activity pattern across the day. And which interval has the max number of steps.
 
+Let's plot the activity patern over a timeline
+```{r serie}
+#Getting the meaning of steps by interval
+aggregated_data <- aggregate(steps~interval, activity_data, mean);
+
+#Plotting the timeline
+g <- ggplot(aggregated_data, aes(x = interval, y = steps));
+g + geom_line(colour="darkblue") +
+  #Vertical line to see the max
+  geom_vline(xintercept = aggregated_data[which.max(aggregated_data$steps),]$interval, colour = "red");
+```
+
+We can see that the vertical line show us that the max number of steps is almost on 800. We can confirm it:
+```{r maxsteps}
+aggregated_data[which.max(aggregated_data$steps),];
+```
+
+We can see that the max number of steps is about 206, and that occur on interval 835.
 
 ## Imputing missing values
 
