@@ -7,8 +7,8 @@ output:
 
 
 ## Loading and preprocessing the data
-First, we are gonna set our constants and check if the working directory exists. Then we'll set our working environment.
 
+First, we are gonna set our constants and check if the working directory exists. Then we'll set our working environment.
 ```{r setwd, echo = TRUE}
 #Here, you can change the working directory
 MAIN_DIRECTORY <- "C:/Project1ReproducibleResearch";
@@ -23,7 +23,6 @@ setwd(MAIN_DIRECTORY);
 ```
 
 Then we'll download the data and then load the data into dataframe.
-
 ```{r load, echo = TRUE}
 #Verifying if data file exists.
 if(!file.exists(DATA_ZIP_FILE)){
@@ -41,13 +40,38 @@ activity_data <- read.csv(file.path(DATA_UNZIP_DIRECTORY, DATA_FILE));
 activity_data$date <- as.Date(activity_data$date);
 ```
 
-Let's show how looks like the data
+Let's show how the data looks like
 ```{r show, echo = TRUE}
 head(activity_data);
 ```
 
 ## What is mean total number of steps taken per day?
+We want to figure out how many steps take a person per day. Our analysis will sum the steps by date, and then we'll find the mean and the median of the data. 
+```{r, echo=FALSE}
+library(ggplot2);
+```
 
+Let's plot a histogram for steps by day.
+```{r histogram, echo = TRUE}
+#Sum all steps by date
+aggregated_data <- aggregate(steps~date, activity_data, sum);
+
+#Plotting the histogram
+g <- ggplot(aggregated_data, aes(x=steps));
+g  + geom_histogram(binwidth=2500, colour="black", fill="red", alpha = .4);
+```
+
+With the previous histogram we can see that usually a person registers about 10000 steps each day.
+
+Now, we'll show you the mean and the median of steps taken per day.
+```{r mean_median}
+#Mean calculation
+mean(aggregated_data$steps);
+
+#Median calculation
+median(aggregated_data$steps);
+```
+With the previous calcultation we can confirm that a person registers about 10000 steps by day with this data set.
 
 
 ## What is the average daily activity pattern?
