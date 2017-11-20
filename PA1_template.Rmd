@@ -7,8 +7,44 @@ output:
 
 
 ## Loading and preprocessing the data
+First, we are gonna set our constants and check if the working directory exists. Then we'll set our working environment.
 
+```{r setwd, echo = TRUE}
+#Here, you can change the working directory
+MAIN_DIRECTORY <- "C:/Project1ReproducibleResearch";
+DATA_URL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip";
+DATA_ZIP_FILE <- "activity.zip";
+DATA_UNZIP_DIRECTORY <- "activity_data";
+DATA_FILE <- "activity.csv";
 
+#Verifying if main directory exists.
+if(!file.exists(MAIN_DIRECTORY)){ dir.create(MAIN_DIRECTORY); }
+setwd(MAIN_DIRECTORY);
+```
+
+Then we'll download the data and then load the data into dataframe.
+
+```{r load, echo = TRUE}
+#Verifying if data file exists.
+if(!file.exists(DATA_ZIP_FILE)){
+  download.file(DATA_URL, DATA_ZIP_FILE);
+}
+#Verifying if directory exists.
+if(!file.exists(DATA_UNZIP_DIRECTORY)){
+  unzip(DATA_ZIP_FILE, exdir = DATA_UNZIP_DIRECTORY);
+}
+
+#Read csv data
+activity_data <- read.csv(file.path(DATA_UNZIP_DIRECTORY, DATA_FILE));
+
+#Cast the date attribute
+activity_data$date <- as.Date(activity_data$date);
+```
+
+Let's show how looks like the data
+```{r show, echo = TRUE}
+head(activity_data);
+```
 
 ## What is mean total number of steps taken per day?
 
