@@ -98,7 +98,37 @@ aggregated_data[which.max(aggregated_data$steps),];
 We can see that the max number of steps is about 206, and that occur on interval 835.
 
 ## Imputing missing values
+We can notice that the data contains some missing values for steps variable.
+```{r missing}
+summary(activity_data$steps);
+```
+We can see  that we have 2304 rows with missing values.
 
+Let's fill this values with the mean by interval
+```{r fillmissing}
+#Copy of activity data
+activity_data_copy <- activity_data;
 
+#Calculation of mean of steps by interval.
+aggregated_data <- aggregate(steps~interval, activity_data_copy, mean);
+#Changing the row names by interval.
+row.names(aggregated_data) <- aggregated_data$interval;
+#Filling the missing values.
+activity_data_copy[is.na(activity_data_copy$steps),]$steps <- round(aggregated_data[as.character(activity_data_copy[is.na(activity_data_copy$steps),'interval']),'steps']);
+
+summary(activity_data_copy$steps);
+```
+
+We can see now it doesn't have missing values for steps variable.
+
+Let's compare the two histograms (previous with missing values against the new without missing values)
+```{r compare}
+aggregated_data <- aggregate(steps~date, activity_data, sum);
+aggregated_data_copy <- aggregate(steps~date, activity_data_copy, sum);
+g <- ggplot(aggregated_data, aes(x=steps));
+g  +  geom_histogram(binwidth=2500, colour="black", fill="black", alpha = .4) + 
+      geom_histogram(data = aggregated_data_copy, binwidth = 2500, fill = "green", colour="green", alpha = .3);
+```
+With the plot we figure out that filling the missing values will have a great impact over the values where the steps is about 10000.
 
 ## Are there differences in activity patterns between weekdays and weekends?
