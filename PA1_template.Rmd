@@ -123,12 +123,33 @@ We can see now it doesn't have missing values for steps variable.
 
 Let's compare the two histograms (previous with missing values against the new without missing values)
 ```{r compare}
+#Calculation of steps by date
 aggregated_data <- aggregate(steps~date, activity_data, sum);
 aggregated_data_copy <- aggregate(steps~date, activity_data_copy, sum);
+
+#Plotting the data
 g <- ggplot(aggregated_data, aes(x=steps));
 g  +  geom_histogram(binwidth=2500, colour="black", fill="black", alpha = .4) + 
       geom_histogram(data = aggregated_data_copy, binwidth = 2500, fill = "green", colour="green", alpha = .3);
 ```
+
 With the plot we figure out that filling the missing values will have a great impact over the values where the steps is about 10000.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+Now we want to figure out how change the activity pattern on weekends against weekdays.
+
+Let's plot the timeline.
+```{r weekends}
+
+#Calculation of mean by interval and type of day (Weekend or Weekday)
+activity_data$day <- ifelse(grepl("S(at|un)", weekdays(activity_data$date)), "Weekend", "Weekday");
+activity_data$day <- factor(activity_data$day);
+aggregated_data <- aggregate(steps~interval + day, activity_data, mean);
+
+#Plotting the data
+g <- ggplot(aggregated_data, aes(x = interval, y = steps));
+g + geom_line(colour="darkblue") + facet_grid(day~.)
+
+```
+
+We can see that in weekends the activity is most spread than weekdays. But we have the highest value in weekdays, a good reason could be that in weekdays we have to do a lot of activity to get at workplace.
